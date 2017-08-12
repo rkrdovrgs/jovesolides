@@ -1,32 +1,45 @@
 var express = require("express");
-var path = require("path");
-var bodyParser = require('body-parser');
+var bodyParser = require("body-parser");
+var cors = require('cors');
+var morgan = require('morgan');
+var api = require('./api');
 
-//api references
-var categories = require('./api/categories');
-
+// Create a new express app
 var app = express();
-var port = 3000;
+// Sets an initial port. We'll use this later in our listener
+var PORT = process.env.PORT || 3000;
 
+// Enable logging
+app.use(morgan("combined"));
 
+// Enable CORS
+app.use(cors());
+
+// Set content body parser
 app.use(bodyParser.json());
-
-// para poder obtener archivos estatis dentro de dist y content
-app.use("/dist", express.static(path.join(__dirname, 'dist')));
-app.use("/content", express.static(path.join(__dirname, 'content')));
-
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text());
+app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 
-//aqui vamos a definir las rutas del servidor
-app.use(categories);
+// Static folders
+app.use("/dist", express.static("./dist"));
+app.use("/content", express.static("./content"));
 
 
+// -------------------------------------------------
+// Configure all routes inside api folder
+api.configureRoutes(app);
 
-// ruta por defecto, si no enconstraste con que responder, mandeme index.html
-app.use((req, res) => {
-    res.sendFile(path.join(__dirname, "./index.html"));
+// Main "/" Route. This will redirect the user to our rendered React application
+app.get("*", function (req, res, next) {
+    if (req.url.startsWith("/api/")) return next();
+    res.sendFile(__dirname + "/index.html");
 });
 
-app.listen(port, () => {
-    console.log(`Server started at port: ${port}`);
+// -------------------------------------------------
+
+// Starting our express server
+app.listen(PORT, function () {
+    console.log("App listening on PORT: " + PORT);
 });

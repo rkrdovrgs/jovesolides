@@ -1,1 +1,0 @@
-client side logic in this folder

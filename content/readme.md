@@ -1,1 +1,0 @@
-images, logos, icons, css goes in this folder

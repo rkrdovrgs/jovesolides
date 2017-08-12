@@ -1,0 +1,8 @@
+{
+    "ignore": [
+        "app/**/*",
+        "dist/**/*",
+        "index.html",
+        "README.md"
+    ]
+}
