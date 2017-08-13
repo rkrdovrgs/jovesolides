@@ -1,4 +1,4 @@
-var { DefinePlugin } = require('webpack');
+var { DefinePlugin, ProvidePlugin } = require('webpack');
 
 module.exports = {
 
@@ -64,9 +64,13 @@ module.exports = {
   plugins: [
     new DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-        TARGET_PLATFORM: JSON.stringify('dom')
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
       }
+    }),
+    new ProvidePlugin({
+      jQuery: 'jquery',
+      $: 'jquery',
+      jquery: 'jquery'
     })
   ]
 };
